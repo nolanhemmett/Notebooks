@@ -1,0 +1,227 @@
+---
+title: S.S Lazio Is One Of The Best Clubs In European Football
+author: Nolan Hemmett
+date: '2022-04-07'
+slug: s-s-lazio-is-one-of-the-best-clubs-in-european-football
+categories: []
+tags: []
+---
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+#install.packages("worldfootballR")
+#install.packages("cowplot")
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(tidyverse)
+library(worldfootballR)
+library(gt)
+library(cowplot)
+```
+
+
+The last time Lazio won the title in Serie A was in 2000. Since then, the club has always been a solid top 10 squad in Italy. Their highest finish since the title win was in 2015, where they finished third on the table. 
+
+Currently, Lazio is 6th on the table. A win against Sassuolo on April 2nd put them two points behind Roma. The club is looking to push past Roma to get into the Europa League for next year.
+
+The biggest strength that Lazio brings to the table is their ability to capitalize on shot attempts better than any club in the world. They are able to put away 17.3% of shots they took so far this year.
+
+
+```{r , message=FALSE, warning=FALSE, echo=FALSE}
+ Squaddata <-fb_big5_advanced_season_stats(season_end_year=2022, stat_type="shooting", team_or_player="team") %>% filter(Team_or_Opponent != "opponent")
+
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+goalsshots <-Squaddata  %>% 
+  select(Squad,Sh_Standard,Gls_Standard,) %>% 
+  mutate(
+    goalspershot= (Gls_Standard/Sh_Standard)
+  ) %>% 
+  arrange(desc(goalspershot))
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+
+Lazio<- goalsshots %>% filter(Squad == "Lazio")
+Villa<- goalsshots %>% filter(Squad == "Villarreal")
+Bayern<- goalsshots %>% filter(Squad == "Bayern Munich")
+Chelsea<- goalsshots %>% filter(Squad == "Chelsea")
+Madrid<- goalsshots %>%  filter(Squad == "Real Madrid")
+Man<- goalsshots %>%  filter(Squad == "Manchester City")
+Liverpool<- goalsshots %>% filter(Squad == "Liverpool")
+Atletico<- goalsshots %>% filter(Squad == "Atlético Madrid")
+
+
+ggplot(
+  
+  goalsshots, aes(x = Shots, y = Goals)) +
+ 
+  geom_point(data=goalsshots, aes(x=Sh_Standard, y=Gls_Standard), color= "grey") +
+  geom_smooth(data=goalsshots, aes(x=Sh_Standard, y=Gls_Standard), method="lm", se=FALSE) +
+  geom_point(data=Lazio, aes(x=Sh_Standard, y=Gls_Standard), color="#87D8F7",
+             size=3)+
+annotate('text', x = 340, y = 56, label = 'Lazio', size=3)+
+  
+  geom_point(data=Villa, aes(x=Sh_Standard, y=Gls_Standard), color="#FFE667",
+             size=3)+
+annotate('text', x = 365, y = 45, label = 'Villarreal', size=3)+
+
+  geom_point(data=Bayern, aes(x=Sh_Standard, y=Gls_Standard), color="#DC052D",
+             size=3)+
+annotate('text', x = 540, y = 83, label = 'Bayern Munich', size=3)+
+
+  geom_point(data=Chelsea, aes(x=Sh_Standard, y=Gls_Standard), color="#034694",
+             size=3)+
+annotate('text', x = 412, y = 54, label = 'Chelsea', size=3)+
+
+  geom_point(data=Madrid, aes(x=Sh_Standard, y=Gls_Standard), color="#FEBE10",
+             size=3)+
+annotate('text', x = 500, y = 57, label = 'Real Madrid', size=3)+
+
+  geom_point(data=Man, aes(x=Sh_Standard, y=Gls_Standard), color="#6CABDD",
+             size=3)+
+annotate('text', x = 547, y = 65, label = 'Manchester City', size=3)+
+
+  geom_point(data=Liverpool, aes(x=Sh_Standard, y=Gls_Standard), color="#00B2A9",
+             size=3)+
+annotate('text', x = 550, y = 77, label = 'Liverpool', size=3)+
+
+  geom_point(data=Atletico, aes(x=Sh_Standard, y=Gls_Standard), color="#CB3524",
+             size=3)+
+annotate('text', x = 365, y = 52, label = 'Atlético Madrid', size=3)+
+
+   labs(
+    title = "Lazio makes 'em count",
+    subtitle = "Compared to teams in the quarter finals of Champions League,\nLazio dosen't get nearly as many shots, but capitalizes on shots better\nthan any team in the top 5 European leagues. ",
+    caption = "By: Nolan Hemmett  |  Source: Football Reference"
+    )+
+  theme_minimal()+
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 12), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank(),
+    plot.title.position = "plot"
+    )
+  
+```
+
+
+The biggest reason they are score so many goals with not many chances is because they have the most prolific goal scorer in Serie A.
+
+Ciro Immobile has the most goals of anybody in Italy this year. Immobile is often overlooked because of his reputation having bad national team performances, but none can argue with is numbers this year. 
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+Ciro <- fb_big5_advanced_season_stats(season_end_year=2022, stat_type="shooting", team_or_player="player") %>% 
+  select(Player,Squad,Comp, Gls_Standard) %>% 
+  arrange(desc(Gls_Standard)) %>% 
+  top_n(10)
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+Ciro %>% 
+  gt() %>% 
+  cols_label(
+    Gls_Standard = "Goals",
+    Comp= "League",
+    Squad="Team"
+  ) %>%
+  tab_header(
+    title = "Is Ciro Immobile the best in Italy?",
+    subtitle = "Ciro Immobile has the most goals of any player in the Italian league, comparable to some of the best goal scorers in the world"
+  ) %>% tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "left"),
+    locations = cells_title("title")
+  )%>% tab_style(
+    style = cell_text(color = "black", weight = "bold", align = "left"),
+    locations = cells_title("subtitle")
+  ) %>% tab_source_note(
+    source_note = md("**By:** Nolan Hemmett  |  **Source:** [Football Reference](https://fbref.com/en/comps/Big5/stats/players/Big-5-European-Leagues-Stats)")
+  ) %>%
+  tab_style(
+     locations = cells_column_labels(columns = everything()),
+     style = list(
+       cell_borders(sides = "bottom", weight = px(3)),
+       cell_text(weight = "bold", size=12)
+     )
+   )  %>%
+  opt_row_striping() %>% 
+  opt_table_lines("none") %>% 
+  tab_style(
+    style = list(
+      cell_fill(color = "#87D8F7"),
+      cell_text(color = "white")
+      ),
+    locations = cells_body(
+      rows = Player == "Ciro Immobile")
+  )
+```
+
+Another big reason why S.S Lazio is a top team in Italy is because they are extremely efficient when it comes to passing. Lazio completes 86% of pass attempts this year and competes with the best clubs in the world in passing efficiency. 
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+World <- fb_big5_advanced_season_stats(season_end_year=2022, stat_type="passing", team_or_player="team") %>% filter(Team_or_Opponent != "opponent") %>% 
+  mutate(
+    percentage = (Cmp_Total/Att_Total)
+  ) %>% 
+  select(Squad,Comp,Cmp_Total,Att_Total,percentage) %>% 
+  arrange(desc(percentage)) %>% 
+  top_n(10)
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+SerieA <- fb_big5_advanced_season_stats(season_end_year=2022, stat_type="passing", team_or_player="team") %>% filter(Team_or_Opponent != "opponent",Comp == "Serie A") %>% 
+  mutate(
+    percentage = (Cmp_Total/Att_Total)
+  ) %>% 
+  select(Squad,Comp,Cmp_Total,Att_Total,percentage) %>% 
+  arrange(desc(percentage)) %>% 
+  top_n(10)
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+Wla <- World %>% filter(Squad == "Lazio")
+Sla <- SerieA %>% filter(Squad == "Lazio")
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+bar1 <- ggplot() + geom_bar(data=SerieA, aes(x=reorder(Squad, percentage), weight=percentage)) +   geom_bar(data=Sla, aes(x=reorder(Squad, percentage), weight=percentage), fill="#87D8F7") +
+  coord_flip() + 
+  labs(title="Lazio is the most pass efficient club in Italy", subtitle = "Pass efficiency is a game of fine margins and Lazio comptetes with the best in the world.",  x="", y="Passing Completion Percentage", caption = "") + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 8), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    )
+```
+
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+bar2 <- ggplot() + 
+  geom_bar(data=World, aes(x=reorder(Squad, percentage), weight=percentage)) +  
+  geom_bar(data=Wla, aes(x=reorder(Squad, percentage), weight=percentage), fill="#87D8F7") +
+  coord_flip() +
+  labs(title = "", subtitle= "", x="", y="",  caption="By: Nolan Hemmett | Source: Football Reference") + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 8), 
+    plot.subtitle = element_text(size=10), 
+    panel.grid.minor = element_blank()
+    )
+```
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+plot_grid(bar1,bar2)
+```
+
+Lazio is no stranger to glory, but in recent years they haven't had quite enough to make it to the top. They have all the right pieces to make it to Europa League this year and will be a club to watch going into next year.
+
