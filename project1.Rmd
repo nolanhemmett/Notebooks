@@ -225,3 +225,4 @@ plot_grid(bar1,bar2)
 
 Lazio is no stranger to glory, but in recent years they haven't had quite enough to make it to the top. They have all the right pieces to make it to Europa League this year and will be a club to watch going into next year.
 
+The code that generated this post and these graphs can be found  [here](https://github.com/nolanhemmett/Notebooks/blob/main/project1.Rmd) 
